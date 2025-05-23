@@ -1,61 +1,46 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Scripture
 {
-    private Reference _reference;
+    public Reference Reference { get; }
     private List<Word> _words;
-    private Random _random = new Random();
 
     public Scripture(Reference reference, string text)
     {
-        _reference = reference;
-        _words = new List<Word>();
-        foreach (string word in text.Split(' '))
-        {
-            _words.Add(new Word(word));
-        }
-    }
-
-    public void HideRandomWords(int numberToHide)
-    {
-        int count = 0;
-        List<int> indices = new List<int>();
-        for (int i = 0; i < _words.Count; i++)
-        {
-            if (!_words[i].IsHidden)
-            {
-                indices.Add(i);
-            }
-        }
-
-        while (count < numberToHide && indices.Count > 0)
-        {
-            int randomIndex = _random.Next(indices.Count);
-            int wordIndex = indices[randomIndex];
-            _words[wordIndex].Hide();
-            indices.RemoveAt(randomIndex);
-            count++;
-        }
+        Reference = reference;
+        _words = text.Split(' ').Select(w => new Word(w)).ToList();
     }
 
     public string GetDisplayText()
     {
-        string text = _reference.GetDisplayText() + " ";
-        foreach (Word word in _words)
+        return $"{Reference.GetDisplayText()}\n{string.Join(" ", _words.Select(w => w.GetDisplayText()))}";
+    }
+
+    public bool HideRandomWords(int count)
+    {
+
+        var notHidden = _words.Where(w => !w.IsHidden()).ToList();
+        if (notHidden.Count == 0)
+            return false;
+
+        var rnd = new Random();
+        int toHide = Math.Min(count, notHidden.Count);
+
+        for (int i = 0; i < toHide; i++)
         {
-            text += word.GetDisplayText() + " ";
+
+            var wordToHide = notHidden[rnd.Next(notHidden.Count)];
+            wordToHide.Hide();
+            notHidden.Remove(wordToHide);
         }
-        return text.Trim();
+
+        return true; 
     }
 
     public bool AllWordsHidden()
     {
-        foreach (Word word in _words)
-        {
-            if (!word.IsHidden)
-                return false;
-        }
-        return true;
+        return _words.All(w => w.IsHidden());
     }
 }

@@ -1,35 +1,31 @@
 public class Reference
 {
-    private string _book;
-    private int _chapter;
-    private int _verseStart;
-    private int? _verseEnd;
+    public string Book { get; }
+    public int Chapter { get; }
+    public int VerseStart { get; }
+    public int? VerseEnd { get; }
 
-    public Reference(string book, int chapter, int verse)
+    public Reference(string book, int chapter, int verseStart)
     {
-        _book = book;
-        _chapter = chapter;
-        _verseStart = verse;
-        _verseEnd = null;
+        Book = book;
+        Chapter = chapter;
+        VerseStart = verseStart;
+        VerseEnd = null;
     }
 
     public Reference(string book, int chapter, int verseStart, int verseEnd)
     {
-        _book = book;
-        _chapter = chapter;
-        _verseStart = verseStart;
-        _verseEnd = verseEnd;
+        Book = book;
+        Chapter = chapter;
+        VerseStart = verseStart;
+        VerseEnd = verseEnd;
     }
 
     public string GetDisplayText()
     {
-        if (_verseEnd.HasValue)
-        {
-            return $"{_book} {_chapter}:{_verseStart}-{_verseEnd.Value}";
-        }
+        if (VerseEnd == null)
+            return $"{Book} {Chapter}:{VerseStart}";
         else
-        {
-            return $"{_book} {_chapter}:{_verseStart}";
-        }
+            return $"{Book} {Chapter}:{VerseStart}-{VerseEnd}";
     }
 }
