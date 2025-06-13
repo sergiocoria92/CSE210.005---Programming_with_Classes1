@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 public class ListingActivity : Activity
+
 {
-    private List<string> _prompts = new List<string>
+    private readonly List<string> _prompts = new List<string>
     {
         "Who are people that you appreciate?",
         "What are personal strengths of yours?",
@@ -10,8 +13,10 @@ public class ListingActivity : Activity
     };
 
     private int _count;
+    private readonly Random _random = new Random();
 
-    public ListingActivity() : base("Listing", "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.")
+    public ListingActivity() 
+        : base("Listing", "This activity will help you reflect on the good things in your life by having you list as many things as you can in a certain area.")
     {
     }
 
@@ -26,9 +31,10 @@ public class ListingActivity : Activity
         Console.WriteLine();
 
         DateTime startTime = DateTime.Now;
-        DateTime endTime = startTime.AddSeconds(_duration);
+        DateTime endTime = startTime.AddSeconds(Duration);
 
         _count = 0;
+
         while (DateTime.Now < endTime)
         {
             Console.Write("> ");
@@ -37,13 +43,12 @@ public class ListingActivity : Activity
         }
 
         Console.WriteLine($"You listed {_count} items!");
-        
+
         End();
     }
 
     private string GetRandomPrompt()
     {
-        Random random = new Random();
-        return _prompts[random.Next(_prompts.Count)];
+        return _prompts[_random.Next(_prompts.Count)];
     }
 }
